@@ -31,4 +31,14 @@ public class MoveCubeZ : MonoBehaviour
             isForward = !isForward;
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        collision.gameObject.transform.parent = gameObject.transform;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        collision.gameObject.transform.parent = null;
+    }
 }

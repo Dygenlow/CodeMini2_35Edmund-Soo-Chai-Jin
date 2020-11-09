@@ -9,7 +9,6 @@ public class PlayerController35 : MonoBehaviour
     float gravityModifier = 2.5f;
     float absZ;
 
-    bool onStartCube = true;
     bool onMoveCube = false;
     bool onCube = true;
 
@@ -33,56 +32,36 @@ public class PlayerController35 : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
 
-        transform.Translate(Vector3.forward * Time.deltaTime * horizontalInput * moveSpeed);
-
-        if (Input.GetKeyDown(KeyCode.Space) && !onMoveCube && onStartCube && onCube)
+        if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
+            isGround = false;
             onCube = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && onMoveCube && !onStartCube && onCube)
+        else
         {
-            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-            onCube = false;
+            transform.Translate(Vector3.forward * Time.deltaTime * horizontalInput * moveSpeed);
         }
-
-        if (onMoveCube && onCube)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, movingCube.transform.position.z);
-        }
-
-        if (onStartCube && onCube)
-        {
-            transform.position = startPos;
-        }
-        
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("StartCube"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            onStartCube = true;
-            onMoveCube = false;
-            onCube = true;
-
-            startPos = transform.position;
+            isGround = true;    
         }
 
-        if(collision.gameObject.CompareTag("MoveCube"))
-        {
-            onStartCube = false;
+        if (collision.gameObject.CompareTag("MoveCube"))
+        {          
             onMoveCube = true;
             onCube = true;
-
+            isGround = true;
             float playerZ = transform.position.z;
             float cubeZ = movingCube.transform.position.z;
 
             absZ = cubeZ - playerZ;
-        }
+        }  
     }
     private void Jump()
     {
